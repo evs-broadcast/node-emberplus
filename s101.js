@@ -155,7 +155,7 @@ S101Codec.prototype.handleEmberFrame = function (frame) {
   }
 
   var payload = frame.readBuffer()
-  payload = payload.slice(0, payload.length - 2)
+  payload = payload.slice(2, payload.length - 2)
   if (flags === FLAG_SINGLE_PACKET) {
     winston.debug('single ember packet')
     self.handleEmberPacket(SmartBuffer.fromBuffer(payload))
