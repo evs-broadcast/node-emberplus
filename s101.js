@@ -143,19 +143,17 @@ S101Codec.prototype.handleEmberFrame = function (frame) {
     return
   }
 
+  frame.skip(appBytes)
   if (appBytes < 2) {
     winston.warn('Frame missing Glow DTD version')
-    frame.skip(appBytes)
   } else {
     appBytes -= 2
     if (appBytes > 0) {
-      frame.skip(appBytes)
       winston.warn('App bytes with unknown meaning left over')
     }
   }
 
   var payload = frame.readBuffer()
-  payload = payload.slice(2, payload.length - 2)
   if (flags === FLAG_SINGLE_PACKET) {
     winston.debug('single ember packet')
     self.handleEmberPacket(SmartBuffer.fromBuffer(payload))
