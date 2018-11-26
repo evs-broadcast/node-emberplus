@@ -160,7 +160,7 @@ DeviceTree.prototype.getDirectory = function (qnode) {
                     reject(error);
                     return;
                 }
-                const requestedPath = qnode.path != null ? qnode.path : qnode.elements["0"].path;
+                const requestedPath = node.path != null ? node.path : node.elements[0].path;
                 const nodeElements = node == null ? null : node.elements;
                 if (nodeElements != null
                     && nodeElements.every(el => el.path === requestedPath || isDirectSubPathOf(el.path, requestedPath))) {
