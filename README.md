@@ -38,7 +38,6 @@ tree.connect()
    console.log(e.stack);
 });
 
-
 // Simple packet decoder
 const Decoder = require('emberplus').DecodeBuffer;
 const fs = require("fs");
@@ -51,3 +50,28 @@ fs.readFile("tree.ember", (e,data) => {
 const TreeServer = require("emberplus").TreeServer;
 const server = new TreeServer("127.0.0.1", 9000, root);
 server.listen().then(() => { console.log("listening"); }).catch((e) => { console.log(e.stack); });
+
+## Original example by bmayton
+
+'''javascript
+const DeviceTree = require('emberplus').DeviceTree;
+
+var tree = new DeviceTree("localhost", 9998);
+
+tree.on('ready', () => {
+    tree.getNodeByPath("EmberDevice/Sources/Monitor/Amplification").then((node) => {
+        
+        // Subscribe to parameter changes
+        tree.subscribe(node, (node) => {
+            console.log("Volume changed: %d", node.contents.value);
+        });
+
+        // Change parameter value
+        tree.setValue(node, -20.0);
+
+    }).catch((e) => {
+        console.log("Failed to resolve node:", e);
+    });
+});
+
+
