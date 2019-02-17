@@ -18,8 +18,7 @@ the way the lib is used so that now it uses Promise
 Server has been added in version 1.6.0.
 
 ## Example usage
-
-```javascript
+'''javascript
 const DeviceTree = require('emberplus').DeviceTree;
 var root;
 var tree = new DeviceTree("10.9.8.7", 9000);
@@ -51,9 +50,8 @@ const TreeServer = require("emberplus").TreeServer;
 const server = new TreeServer("127.0.0.1", 9000, root);
 server.listen().then(() => { console.log("listening"); }).catch((e) => { console.log(e.stack); });
 
-## Original example by bmayton
+// Original examples by bmayton
 
-'''javascript
 const DeviceTree = require('emberplus').DeviceTree;
 
 var tree = new DeviceTree("localhost", 9998);
