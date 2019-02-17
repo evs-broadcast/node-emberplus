@@ -1,3 +1,4 @@
+
 # node-emberplus
 
 This is an implementation of [Lawo's
@@ -18,7 +19,8 @@ the way the lib is used so that now it uses Promise
 Server has been added in version 1.6.0.
 
 ## Example usage
-'''javascript
+
+```javascript
 const DeviceTree = require('emberplus').DeviceTree;
 var root;
 var tree = new DeviceTree("10.9.8.7", 9000);
@@ -36,26 +38,24 @@ tree.connect()
 .catch((e) => {
    console.log(e.stack);
 });
-
 // Simple packet decoder
 const Decoder = require('emberplus').DecodeBuffer;
 const fs = require("fs");
-
 fs.readFile("tree.ember", (e,data) => {
    var root = Decoder(data);
 });
-
 // Server
 const TreeServer = require("emberplus").TreeServer;
 const server = new TreeServer("127.0.0.1", 9000, root);
 server.listen().then(() => { console.log("listening"); }).catch((e) => { console.log(e.stack); });
 
-// Original examples by bmayton
+```
 
+## original example by bmayton
+
+```javascript
 const DeviceTree = require('emberplus').DeviceTree;
-
 var tree = new DeviceTree("localhost", 9998);
-
 tree.on('ready', () => {
     tree.getNodeByPath("EmberDevice/Sources/Monitor/Amplification").then((node) => {
         
@@ -63,13 +63,10 @@ tree.on('ready', () => {
         tree.subscribe(node, (node) => {
             console.log("Volume changed: %d", node.contents.value);
         });
-
         // Change parameter value
         tree.setValue(node, -20.0);
-
     }).catch((e) => {
         console.log("Failed to resolve node:", e);
     });
 });
-
-
+```
