@@ -49,8 +49,6 @@ return Promise.resolve()
 
             console.log(`Full tree received for ${ip}:${port} in ${durationMs/1000}s`);
 
-            client.unsubscribe(client.root.elements[0]);
-
             client.saveTree(data => {
                 fs.writeFileSync(filePath, data);
                 console.log(`Content saved to ${filePath}`);
