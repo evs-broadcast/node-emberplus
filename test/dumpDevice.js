@@ -11,7 +11,7 @@ if (process.argv.length != 5) {
 const [ip, port, filePath] = process.argv.slice(2);
 
 const client = new DeviceTree(ip, port);
-// client._debug = true;
+client._debug = true;
 
 client.on("error", error => {
     console.error(error.message);
@@ -45,6 +45,7 @@ return Promise.resolve()
             client.root.elements !== undefined &&
             client.root.elements.length > 0
         ) {
+            client.disconnect();
             const durationMs = Date.now() - initialTime;
 
             console.log(`Full tree received for ${ip}:${port} in ${durationMs/1000}s`);
@@ -52,7 +53,6 @@ return Promise.resolve()
             client.saveTree(data => {
                 fs.writeFileSync(filePath, data);
                 console.log(`Content saved to ${filePath}`);
-                client.disconnect();
             });
         }
     })
