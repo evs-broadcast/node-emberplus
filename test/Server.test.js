@@ -90,7 +90,7 @@ describe("server", function() {
 
     describe("JSONtoTree", function() {
         let jsonTree;
-        before(function() {
+        beforeAll(function() {
             jsonTree = init();
         });
         it("should generate an ember tree from json", function() {
@@ -106,7 +106,7 @@ describe("server", function() {
 
     describe("Server - Client communication", function() {
         let server,client;
-        before(function() {
+        beforeAll(function() {
             jsonTree = init();
             const root = TreeServer.JSONtoTree(jsonTree);
             server = new TreeServer(LOCALHOST, PORT, root);
@@ -115,10 +115,10 @@ describe("server", function() {
                 console.log("server listening");
             });
         });
-        after(function() {
+        afterAll(function() {
             client.disconnect();
             server.close();
-        })
+        });
         it("should receive and decode the full tree", function () {
             client = new DeviceTree(LOCALHOST, PORT);
             //client._debug = true;

@@ -76,4 +76,42 @@ describe("DeviceTree", () => {
                     expect(error.message).toBe(`Could not connect to ${UNKNOWN_HOST}:${PORT} after a timeout of ${expectedTimeoutInSec} seconds`)
                 });
     });
+
+    describe("Expand", () => {
+        [`${__dirname}/../embrionix.ember`, `${__dirname}/v_matrix.EmBER`, `${__dirname}/divy.EmBER`].forEach(pathFile => {
+            describe(`With server file: ${pathFile}`, function(){
+                let server;
+                beforeAll(() => {
+                    return Promise.resolve()
+                        .then(() => new Promise((resolve, reject) => {
+                            fs.readFile(pathFile, (e, data) => {
+                                if (e) {
+                                    reject(e);
+                                }
+                                resolve(Decoder(data));
+                            });
+                        }))
+                        .then(root => {
+                            server = new TreeServer(LOCALHOST, PORT, root);
+                            return server.listen();
+                        });
+                });
+
+                afterAll(function() {server.close()});
+
+                it("should expand", () => {
+                    return Promise.resolve()
+                        .then(() => {
+                            let tree = new DeviceTree(LOCALHOST, PORT);
+                            return Promise.resolve()
+                                .then(() => tree.connect())
+                                .then(() => tree.getDirectory())
+                                .then(() => tree.expand(tree.root.elements[0]))
+                                .then(() => tree.disconnect())
+                        })
+                }, 100000);
+            });
+        });
+
+    })
 });

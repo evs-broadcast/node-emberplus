@@ -420,7 +420,7 @@ DeviceTree.prototype.unsubscribe = function (node, callback) {
     if (node instanceof ember.Parameter && node.isStream()) {
         // TODO: implement
     } else {
-        node.addCallback(callback);
+        node.cancelCallbacks()
     }
 };
 

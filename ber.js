@@ -12,7 +12,7 @@
  * integer types.  Unfortunately, most of the implementations of BER out
  * there are for doing PKI stuff, so I've been able to find few real-world
  * examples of real value encoding/decoding for BER.  These routines are
- * inspired heavily by libember, which works with the bits of an IEEE 
+ * inspired heavily by libember, which works with the bits of an IEEE
  * double.  Note that this is *not* a complete implementation of X.690,
  * but only the subset required by EmBER (only base 2 for the exponent, and
  * only binary encoding).
@@ -100,7 +100,8 @@ ExtendedReader.prototype.readValue = function() {
         return this.readString(UNIVERSAL(4), true);
     } else if (tag === EMBER_RELATIVE_OID) {
         return this.readOID(EMBER_RELATIVE_OID);
-    }
+    } else if (tag === EMBER_NULL)
+        return null;
     else {
         throw new errors.UnimplementedEmberTypeError(tag);
     }
@@ -141,11 +142,11 @@ ExtendedReader.prototype.readReal = function(tag) {
     var significandShift = (preamble >> 2) & 3;
 
     var exponent = 0;
-    
+
     if(buf.readUInt8(o) & 0x80) {
         exponent = -1;
     }
-    
+
     if(buf.length - o < exponentLength) {
         throw new errors.ASN1Error('Invalid ASN.1; not enough length to contain exponent');
     }
@@ -165,7 +166,7 @@ ExtendedReader.prototype.readReal = function(tag) {
     while(significand.and(mask).eq(0)) {
         significand = significand.shl(8);
     }
-    
+
     mask = Long.fromBits(0x00000000, 0x7FF00000, true)
     while(significand.and(mask).eq(0)) {
         significand = significand.shl(1);
@@ -197,7 +198,7 @@ ExtendedWriter._shorten = function(value) {
         size--;
         value <<= 8;
     }
-    
+
     return {size, value}
 }
 
@@ -249,13 +250,13 @@ ExtendedWriter.prototype.writeReal = function(value, tag) {
         .sub(1023).toSigned();
     while(significand.and(0xFF) == 0)
         significand = significand.shru(8);
-    while(significand.and(0x01) == 0) 
+    while(significand.and(0x01) == 0)
         significand = significand.shru(1);
 
     //console.log(significand, exponent);
     exponent = exponent.toNumber();
     //console.log(significand.toNumber(), exponent);
-    
+
     exponent = ExtendedWriter._shorten(exponent);
     significand = ExtendedWriter._shortenLong(significand);
 
@@ -280,7 +281,13 @@ ExtendedWriter.prototype.writeReal = function(value, tag) {
 
 ExtendedWriter.prototype.writeValue = function(value, tag) {
     // accepts Ember.ParameterContents for enforcing real types
-     if(typeof value === 'object' && value.type && value.type.key && value.type.key.length && typeof value.type.key === 'string') {
+    if (value === null) {
+        tag = EMBER_NULL;
+        this.writeNull();
+        return
+    }
+
+    if(typeof value === 'object' && value.type && value.type.key && value.type.key.length && typeof value.type.key === 'string') {
          if(value.type.key === 'real') {
             this.writeReal(value.value, tag);
             return
