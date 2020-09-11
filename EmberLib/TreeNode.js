@@ -410,7 +410,7 @@ class TreeNode extends ElementInterface {
         const node = this;
         if (this.isRoot()) {
             const elements = this.getChildren();
-            return elements ? {elements: elements.map(e => e.toJSON())}: {elements: []};
+            return { elements: elements ? elements.map(e => e.toJSON()) : [] };
         }
         res.number = node.getNumber();
         res.path = node.getPath();        
